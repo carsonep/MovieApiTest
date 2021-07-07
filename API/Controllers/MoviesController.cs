@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using API.Data;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,37 +9,50 @@ namespace API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private static List<Movie> movies = new List<Movie>
+        private CinemaDbContext _dbContext;
+
+        public MoviesController(CinemaDbContext dbContext)
         {
-            new Movie(){Id = 0, Name = "Mission Impossible", Language="English"},
-            new Movie(){Id = 1, Name = "Matrix", Language="English"}
-        };
+            _dbContext = dbContext;
+        }
 
         [HttpGet]
         public IEnumerable<Movie> Get()
         {
-            return movies;
+            return _dbContext.Movies;
+        }
+
+        [HttpGet("{id}")]
+        public Movie Get(int id)
+        {
+            var movie =_dbContext.Movies.Find(id);
+
+            return movie;
         }
 
         [HttpPost]
-        public void Post([FromBody] Movie movie)
+        public void Post([FromBody] Movie movieObj)
         {
-            movies.Add(movie);
+            _dbContext.Movies.Add(movieObj);
+            _dbContext.SaveChanges();
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Movie movie)
+        public void Put(int id, [FromBody] Movie movieObj)
         {
-            movies[id] = movie;
+            var movie = _dbContext.Movies.Find(id);
+            movie.Name = movieObj.Name;
+            movie.Language = movieObj.Language;
+            _dbContext.SaveChanges();
         }
 
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            movies.RemoveAt(id);
+           var movie = _dbContext.Movies.Find(id);
+            _dbContext.Movies.Remove(movie);
+            _dbContext.SaveChanges();
         }
-
-
-
+        
     }
 }
