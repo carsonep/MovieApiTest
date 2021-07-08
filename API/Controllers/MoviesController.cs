@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using API.Data;
 using API.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,9 +18,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Movie> Get()
+        public IActionResult Get()
         {
-            return _dbContext.Movies;
+            return Ok(_dbContext.Movies);
         }
 
         [HttpGet("{id}")]
@@ -31,27 +32,42 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] Movie movieObj)
+        public IActionResult Post([FromBody] Movie movieObj)
         {
             _dbContext.Movies.Add(movieObj);
             _dbContext.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created);
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Movie movieObj)
+        public IActionResult Put(int id, [FromBody] Movie movieObj)
         {
             var movie = _dbContext.Movies.Find(id);
-            movie.Name = movieObj.Name;
-            movie.Language = movieObj.Language;
-            _dbContext.SaveChanges();
+            if (movie == null)
+            {
+                return NotFound("No Record found against this Id");
+            }
+            else {
+                movie.Name = movieObj.Name;
+                movie.Language = movieObj.Language;
+                _dbContext.SaveChanges();
+                return Ok("Record Updated Successfully");
+            }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
            var movie = _dbContext.Movies.Find(id);
-            _dbContext.Movies.Remove(movie);
-            _dbContext.SaveChanges();
+           if (movie == null)
+            {
+                return NotFound("No Record found against this Id");
+            } else {
+                _dbContext.Movies.Remove(movie);
+                _dbContext.SaveChanges();
+                return Ok("Record Deleted Successfully");
+            }
+            
         }
         
     }
