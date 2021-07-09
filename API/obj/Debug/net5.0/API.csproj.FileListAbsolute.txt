@@ -81,3 +81,5 @@ C:\Users\Nicklas Peterson\Desktop\Projects\CinemaApp\API\bin\Debug\net5.0\runtim
 C:\Users\Nicklas Peterson\Desktop\Projects\CinemaApp\API\bin\Debug\net5.0\Humanizer.dll
 C:\Users\Nicklas Peterson\Desktop\Projects\CinemaApp\API\bin\Debug\net5.0\Microsoft.EntityFrameworkCore.Design.dll
 C:\Users\Nicklas Peterson\Desktop\Projects\CinemaApp\API\bin\Debug\net5.0\dotnet-ef.dll
+C:\Users\Nicklas Peterson\Desktop\Projects\CinemaApp\API\bin\Debug\net5.0\AuthenticationPlugin.dll
+C:\Users\Nicklas Peterson\Desktop\Projects\CinemaApp\API\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
