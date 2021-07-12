@@ -20,8 +20,10 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet("[action]")]
-        public IActionResult AllMovies()
+        public IActionResult AllMovies(string sort, int? pageNumber, int? pageSize)
         {
+            var currentPageNumber = pageNumber ?? 1;
+            var currentPageSize = pageSize ?? 5;
             var movies = from movie in _dbContext.Movies
                          select new
                          {
@@ -33,7 +35,16 @@ namespace API.Controllers
                             Genre = movie.Genre,
                             ImageUrl = movie.ImageUrl
                          };
-            return Ok(movies);
+
+                        switch(sort)
+                        {
+                            case "desc":
+                                return Ok(movies.Skip((currentPageNumber -1) * currentPageSize).Take(currentPageSize).OrderByDescending(m => m.Rating));
+                            case "asc":
+                                return Ok(movies.Skip((currentPageNumber -1) * currentPageSize).Take(currentPageSize).OrderBy(m => m.Rating));
+                            default:
+                                return Ok(movies.Skip((currentPageNumber -1) * currentPageSize).Take(currentPageSize));
+                        }
         }
 
         [Authorize]
@@ -46,6 +57,22 @@ namespace API.Controllers
                return NotFound();
            }
            return Ok(movie);
+        }
+
+        [Authorize]
+        [HttpGet("[action]")]
+        public IActionResult FindMovies(string movieName)
+        {
+            var movies = from movie in _dbContext.Movies
+                         where movie.Name.StartsWith(movieName)
+                         select new
+                         {
+                            Id = movie.Id,
+                            Name = movie.Name,
+                            ImageUrl = movie.ImageUrl
+                         };
+
+            return Ok(movies);
         }
 
         [Authorize(Roles = "Admin")]
